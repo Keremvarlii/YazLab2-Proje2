@@ -267,3 +267,39 @@ aciklama_ciktisi = {
 
 print("\n--- [SYSTEM DECISION] ---")
 print(json.dumps(aciklama_ciktisi, indent=4))
+
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+print("\n--- 4. GÜRÜLTÜ (NOISE) VE DEĞERLENDİRME AŞAMASI ---")
+
+# Gürültü ekleme (Gaussian Noise)
+# Test verimize biraz 'parazit' katıyoruz ki modellerin ne kadar sağlam durduğunu görelim
+gurultu_orani = 0.5 
+X_test_gurultulu = X_test_islenmis + np.random.normal(0, gurultu_orani, X_test_islenmis.shape)
+
+# Gürültülü veriyi pencerelere (sekanslara) bölüyoruz (LSTM için)
+X_test_gurultulu_seq, y_test_gurultulu_seq = sekans_olustur(X_test_gurultulu, y_test, pencere_boyutu=4)
+
+# Değerlendirme fonksiyonu (Metrikleri hesaplamak için)
+def metrikleri_hesapla(y_gercek, y_tahmin_olasilik, model_adi, senaryo="Orijinal"):
+    # Olasılıkları 0 veya 1'e yuvarlıyoruz (0.5 üstü anomali kabul edilir)
+    y_tahmin = (y_tahmin_olasilik > 0.5).astype(int)
+    
+    acc = accuracy_score(y_gercek, y_tahmin)
+    prec = precision_score(y_gercek, y_tahmin, zero_division=0)
+    rec = recall_score(y_gercek, y_tahmin, zero_division=0)
+    f1 = f1_score(y_gercek, y_tahmin, zero_division=0)
+    
+    print(f"\n[{model_adi}] - Senaryo: {senaryo}")
+    print(f"Accuracy : %{acc*100:.2f}")
+    print(f"Precision: %{prec*100:.2f}")
+    print(f"Recall   : %{rec*100:.2f}")
+    print(f"F1-Score : %{f1*100:.2f}")
+
+# LSTM Modeli için tahminler (Orijinal test verisi)
+lstm_tahminler_orijinal = lstm_model.predict(X_test_seq, verbose=0)
+metrikleri_hesapla(y_test_seq, lstm_tahminler_orijinal, "LSTM", "Orijinal Veri")
+
+# LSTM Modeli için tahminler (Gürültülü test verisi)
+lstm_tahminler_gurultulu = lstm_model.predict(X_test_gurultulu_seq, verbose=0)
+metrikleri_hesapla(y_test_gurultulu_seq, lstm_tahminler_gurultulu, "LSTM", "Gürültülü (Noise) Veri")
