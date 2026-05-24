@@ -1,0 +1,4 @@
+valve1/
+valve2/
+*.csv
+__pycache__/
