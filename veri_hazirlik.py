@@ -145,3 +145,125 @@ history_cnn = cnn_model.fit(
 )
 
 print("\n1D-CNN Eğitimi Başarıyla Tamamlandı!")
+
+from pyts.approximation import SymbolicAggregateApproximation
+import warnings
+warnings.filterwarnings('ignore') # Terminali kalabalıklaştırmaması için gereksiz uyarıları gizliyoruz
+
+# 3. MODEL: OTOMATA (AÇIKLANABİLİR MODEL)
+print("\nOtomata Modeli için veriler sembollere (SAX) çevriliyor...")
+
+# Hocanın zorunlu tuttuğu sabit parametreler
+pencere_boyutu = 4
+alfabe_boyutu = 3
+
+# Modeller için ayırdığımız X_train_seq boyutumuz (N, 4, 1) şeklindeydi. 
+# SAX dönüşümü için bunu (N, 4) formuna getiriyoruz.
+X_train_2d = X_train_seq.reshape(-1, pencere_boyutu)
+X_test_2d = X_test_seq.reshape(-1, pencere_boyutu)
+
+# SAX dönüştürücüsünü tanımlıyoruz (PAA işlemini kendi içinde otomatik yapar)
+sax = SymbolicAggregateApproximation(n_bins=alfabe_boyutu, strategy='normal')
+
+# SADECE train verisi ile fit ediyoruz (Veri sızıntısını önlemek için hocanın kuralı)
+X_train_sax_dizileri = sax.fit_transform(X_train_2d)
+X_test_sax_dizileri = sax.transform(X_test_2d)
+
+# Çıkan harfleri (örneğin ['a', 'a', 'b', 'c']) tek bir string kelimeye ('aabc') çeviren yardımcı fonksiyon
+def kelimeye_cevir(sax_matrisi):
+    kelimeler = []
+    for satir in sax_matrisi:
+        # pyts 'a', 'b', 'c' gibi harfleri üretir, bunları birleştirip pattern yapıyoruz
+        kelime = "".join(satir)
+        kelimeler.append(kelime)
+    return kelimeler
+
+train_durumlar = kelimeye_cevir(X_train_sax_dizileri)
+test_durumlar = kelimeye_cevir(X_test_sax_dizileri)
+
+print(f"Eğitim verisinden elde edilen ilk 5 durum (Pattern): {train_durumlar[:5]}")
+
+from collections import defaultdict
+
+print("\nDurumlar arası geçiş olasılıkları hesaplanıyor...")
+
+# Geçişleri saymak için sözlük (dictionary) yapıları oluşturuyoruz
+gecis_sayilari = defaultdict(lambda: defaultdict(int))
+cikis_sayilari = defaultdict(int)
+
+# Eğitim verisindeki (train_durumlar) örüntüleri sırayla gezip kimden kime gidilmiş sayıyoruz
+for i in range(len(train_durumlar) - 1):
+    mevcut_durum = train_durumlar[i]
+    sonraki_durum = train_durumlar[i+1]
+    
+    gecis_sayilari[mevcut_durum][sonraki_durum] += 1
+    cikis_sayilari[mevcut_durum] += 1
+
+# Sayıları olasılıklara (0 ile 1 arasında değerlere) çeviriyoruz
+gecis_olasiliklari = defaultdict(dict)
+
+for durum, gecisler in gecis_sayilari.items():
+    for sonraki, sayi in gecisler.items():
+        # Formül: (A'dan B'ye geçiş sayısı) / (A'dan yapılan toplam çıkış sayısı)
+        olasilik = sayi / cikis_sayilari[durum]
+        gecis_olasiliklari[durum][sonraki] = round(olasilik, 4)
+
+print(f"Olasılıklar Hesaplandı! Sistemde toplam {len(gecis_olasiliklari)} farklı benzersiz durum (state) öğrenildi.")
+
+# Az önce ekranda gördüğümüz 'cccc' durumunun nereye gittiğine (olasılıklarına) bakalım:
+if 'cccc' in gecis_olasiliklari:
+    print(f"\nÖrnek İnceleme -> 'cccc' durumundan sonraki hedefler ve olasılıkları:")
+    print(gecis_olasiliklari['cccc'])
+
+    import Levenshtein
+import json
+
+print("\nAçıklanabilirlik Modülü Çalıştırılıyor...")
+
+# Unseen pattern'lar için en yakın durumu bulan fonksiyon
+def en_yakin_durumu_bul(unseen_pattern, bilinen_durumlar):
+    min_mesafe = float('inf')
+    en_yakin = None
+    for durum in bilinen_durumlar:
+        mesafe = Levenshtein.distance(unseen_pattern, durum)
+        if mesafe < min_mesafe:
+            min_mesafe = mesafe
+            en_yakin = durum
+    return en_yakin, min_mesafe
+
+# Test verisinden hocanın istediği formata uygun bir anı (örneğin 5. zaman adımı) çekelim
+zaman_adimi = 5
+onceki_durum = test_durumlar[zaman_adimi - 1]
+mevcut_pattern = test_durumlar[zaman_adimi]
+
+durum_statu = "seen"
+eslesen_pattern = mevcut_pattern
+
+# Sistemdeki bilinen durumları listeliyoruz
+bilinen_durumlar = list(gecis_olasiliklari.keys())
+
+# Eğer test verisindeki pattern eğitimde yoksa (Unseen ise)
+if mevcut_pattern not in bilinen_durumlar:
+    durum_statu = "unseen"
+    eslesen_pattern, mesafe = en_yakin_durumu_bul(mevcut_pattern, bilinen_durumlar)
+
+# Olasılık Hesabı (Önceki durumdan, eşleşen duruma geçiş ihtimali)
+# Eğer böyle bir geçiş hiç yaşanmamışsa, sistem sıfıra bölme hatası vermesin diye çok küçük bir ihtimal (0.0001) atıyoruz
+gecis_olasiligi = gecis_olasiliklari.get(onceki_durum, {}).get(eslesen_pattern, 0.0001)
+
+# Karar Mekanizması: İhtimal %5'ten (0.05) düşükse sistem bunu beklemiyordur, yani bu bir ANOMALİDİR.
+karar = "anomaly" if gecis_olasiligi < 0.05 else "normal"
+
+# Hocanın raporda zorunlu tuttuğu JSON Çıktısı Formatı
+aciklama_ciktisi = {
+    "time_step": zaman_adimi,
+    "state": onceki_durum,
+    "pattern": mevcut_pattern,
+    "status": durum_statu,
+    "mapped_to": eslesen_pattern,
+    "probability": gecis_olasiligi,
+    "decision": karar
+}
+
+print("\n--- [SYSTEM DECISION] ---")
+print(json.dumps(aciklama_ciktisi, indent=4))
