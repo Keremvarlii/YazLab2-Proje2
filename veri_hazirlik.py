@@ -303,3 +303,51 @@ metrikleri_hesapla(y_test_seq, lstm_tahminler_orijinal, "LSTM", "Orijinal Veri")
 # LSTM Modeli için tahminler (Gürültülü test verisi)
 lstm_tahminler_gurultulu = lstm_model.predict(X_test_gurultulu_seq, verbose=0)
 metrikleri_hesapla(y_test_gurultulu_seq, lstm_tahminler_gurultulu, "LSTM", "Gürültülü (Noise) Veri")
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix, roc_curve, auc
+
+print("\n--- 5. GÖRSELLEŞTİRME VE GRAFİKLER ---")
+
+# Grafiklerin düzgün görünmesi için genel bir boyut ayarlayalım
+plt.figure(figsize=(18, 5))
+
+# 1. Confusion Matrix (Karmaşıklık Matrisi)
+plt.subplot(1, 3, 1)
+y_tahmin_orijinal = (lstm_tahminler_orijinal > 0.5).astype(int)
+cm = confusion_matrix(y_test_seq, y_tahmin_orijinal)
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False)
+plt.title("LSTM - Confusion Matrix (Orijinal)")
+plt.xlabel("Tahmin Edilen")
+plt.ylabel("Gerçek Durum")
+
+# 2. ROC Eğrisi
+plt.subplot(1, 3, 2)
+fpr, tpr, thresholds = roc_curve(y_test_seq, lstm_tahminler_orijinal)
+roc_auc = auc(fpr, tpr)
+plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.title("LSTM - ROC Eğrisi")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.legend(loc="lower right")
+
+# 3. Transition Probability Heatmap (İlk 10 Durum İçin)
+# Çok fazla durum (81) olduğu için grafiğe sığsın diye en çok tekrar eden 10 tanesini alıyoruz
+plt.subplot(1, 3, 3)
+en_cok_cikanlar = sorted(cikis_sayilari.keys(), key=lambda x: cikis_sayilari[x], reverse=True)[:10]
+isi_haritasi_verisi = np.zeros((10, 10))
+
+for i, d1 in enumerate(en_cok_cikanlar):
+    for j, d2 in enumerate(en_cok_cikanlar):
+        isi_haritasi_verisi[i, j] = gecis_olasiliklari.get(d1, {}).get(d2, 0.0)
+
+sns.heatmap(isi_haritasi_verisi, annot=True, fmt=".2f", cmap="YlGnBu", 
+            xticklabels=en_cok_cikanlar, yticklabels=en_cok_cikanlar)
+plt.title("Otomata Geçiş Olasılıkları (İlk 10 Durum)")
+plt.xlabel("Sonraki Durum")
+plt.ylabel("Mevcut Durum")
+
+plt.tight_layout()
+plt.show() # Grafikleri ekranda göster
