@@ -12,7 +12,7 @@ def create_dummy_data():
         # Create 2 dummy files per folder
         for i in range(2):
             df = pd.DataFrame({
-                'datetime': pd.date_range(start='1/1/2026', periods=100, freq='T'),
+                'datetime': pd.date_range(start='1/1/2026', periods=100, freq='min'),
                 'sensor1': np.random.normal(0, 1, 100),
                 'sensor2': np.random.normal(0, 1, 100),
                 'changepoint': 0,
@@ -26,7 +26,7 @@ def create_dummy_data():
     
     # BATADAL Training Dataset (Usually no anomaly label, but for this project rubric says we use it)
     df_batadal = pd.DataFrame({
-        'DATETIME': pd.date_range(start='1/1/2026', periods=300, freq='H'),
+        'DATETIME': pd.date_range(start='1/1/2026', periods=300, freq='h'),
         'L_T1': np.random.normal(0, 1, 300),
         'L_T2': np.random.normal(0, 1, 300),
         'ATT_FLAG': np.random.choice([0, 1], size=300, p=[0.85, 0.15])
