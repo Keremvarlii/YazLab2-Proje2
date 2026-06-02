@@ -9,8 +9,11 @@ class Evaluator:
         self.noise_ratio = self.config['experiment']['noise_ratio']
 
     def calculate_metrics(self, y_true, y_pred_prob, model_name, scenario="Orijinal"):
-        """Modelin tahmin olasılıklarını 0 veya 1'e çevirip temel metrikleri hesaplar."""
-        y_pred = (y_pred_prob > 0.5).astype(int)
+        """Modelin tahmin olasılıklarını ve gerçek değerleri 0 veya 1'e çevirip metrikleri hesaplar."""
+        
+        # Hem tahminleri hem de gerçek değerleri KESİN olarak 0 ve 1 (integer) formatına zorluyoruz
+        y_pred = (np.array(y_pred_prob) > 0.5).astype(int)
+        y_true = (np.array(y_true) > 0.5).astype(int) 
         
         acc = accuracy_score(y_true, y_pred)
         prec = precision_score(y_true, y_pred, zero_division=0)

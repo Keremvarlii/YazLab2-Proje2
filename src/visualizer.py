@@ -10,8 +10,11 @@ class Visualizer:
         os.makedirs(self.output_dir, exist_ok=True)
         
     def plot_confusion_matrix(self, y_true, y_pred_prob, model_name, dataset_name):
-        y_pred = (y_pred_prob > 0.5).astype(int)
-        cm = confusion_matrix(y_true, y_pred)
+        # Gerçek değerleri ve tahminleri 0-1 aralığına zorluyoruz (-999 hatasını önlemek için)
+        y_true_bin = (np.array(y_true) > 0.5).astype(int)
+        y_pred = (np.array(y_pred_prob) > 0.5).astype(int)
+        
+        cm = confusion_matrix(y_true_bin, y_pred)
         
         plt.figure(figsize=(6, 5))
         sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False)
@@ -23,7 +26,10 @@ class Visualizer:
         plt.close()
 
     def plot_roc_curve(self, y_true, y_pred_prob, model_name, dataset_name):
-        fpr, tpr, _ = roc_curve(y_true, y_pred_prob)
+        # ROC eğrisi için de gerçek değerleri -999'dan kurtarıp 0-1 yapıyoruz
+        y_true_bin = (np.array(y_true) > 0.5).astype(int)
+        
+        fpr, tpr, _ = roc_curve(y_true_bin, y_pred_prob)
         roc_auc = auc(fpr, tpr)
         
         plt.figure(figsize=(6, 5))
