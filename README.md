@@ -31,9 +31,9 @@ Hocanın proje değerlendirme rubriği kapsamında zorunlu tuttuğu 5 temel gör
 Modellerin BATADAL veri setindeki gerçek ve tahmin edilen sınıf dağılımları:
 
 <div align="center">
-  <img src="outputs/LSTM_BATADAL_cm.png" width="30%" alt="LSTM Confusion Matrix">
-  <img src="outputs/GRU_BATADAL_cm.png" width="30%" alt="GRU Confusion Matrix">
-  <img src="outputs/1D-CNN_BATADAL_cm.png" width="30%" alt="1D-CNN Confusion Matrix">
+  <img src="outputs/figures/LSTM_BATADAL_cm.png" width="30%" alt="LSTM Confusion Matrix">
+  <img src="outputs/figures/GRU_BATADAL_cm.png" width="30%" alt="GRU Confusion Matrix">
+  <img src="outputs/figures/1D-CNN_BATADAL_cm.png" width="30%" alt="1D-CNN Confusion Matrix">
 </div>
 <br>
 
@@ -41,9 +41,9 @@ Modellerin BATADAL veri setindeki gerçek ve tahmin edilen sınıf dağılımlar
 Modellerin farklı eşik değerlerindeki (threshold) ayrım gücü (True Positive / False Positive) kapasiteleri:
 
 <div align="center">
-  <img src="outputs/LSTM_BATADAL_roc.png" width="30%" alt="LSTM ROC Eğrisi">
-  <img src="outputs/GRU_BATADAL_roc.png" width="30%" alt="GRU ROC Eğrisi">
-  <img src="outputs/1D-CNN_BATADAL_roc.png" width="30%" alt="1D-CNN ROC Eğrisi">
+  <img src="outputs/figures/LSTM_BATADAL_roc.png" width="30%" alt="LSTM ROC Eğrisi">
+  <img src="outputs/figures/GRU_BATADAL_roc.png" width="30%" alt="GRU ROC Eğrisi">
+  <img src="outputs/figures/1D-CNN_BATADAL_roc.png" width="30%" alt="1D-CNN ROC Eğrisi">
 </div>
 <br>
 
@@ -51,7 +51,7 @@ Modellerin farklı eşik değerlerindeki (threshold) ayrım gücü (True Positiv
 Oluşturulan Automata durumlarının (states) kendi aralarındaki olasılıksal geçiş haritası:
 
 <div align="center">
-  <img src="outputs/Automata_BATADAL_transition_heatmap.png" width="60%" alt="Automata Transition Heatmap">
+  <img src="outputs/figures/Automata_BATADAL_transition_heatmap.png" width="60%" alt="Automata Transition Heatmap">
 </div>
 <br>
 
