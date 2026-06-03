@@ -1,7 +1,7 @@
 # YazLab 2. Proje: Deney Sonuçları ve Karşılaştırmalı Analiz Raporu
 
-**Grup:** xx. Grup  
-**Tarih:** 04.04.2026  
+**Grup:** 25. Grup  
+**Tarih:** 03.04.2026  
 
 ## Giriş
 Bu tamamlayıcı doküman, **"From Black-Box to Explainability: Probabilistic Automata for Time Series Analysis"** başlıklı ana projenin raporunda yer alması gereken kapsamlı deney sonuçlarını, detaylı tablo dökümlerini ve zorunlu görsel analizleri içermektedir. Projede LSTM, GRU, 1D-CNN ve Probabilistic Automata modelleri sistematik bir şekilde analiz edilmiştir.
