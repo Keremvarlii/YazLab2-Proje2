@@ -1,4 +1,4 @@
-# YazLab 2. Proje: Deney Sonuçları ve Karşılaştırmalı Analiz Rapor
+# YazLab 2. Proje: Deney Sonuçları ve Karşılaştırmalı Analiz Raporu
 
 **Grup:** 25. Grup  
 **Tarih:** 03.04.2026  
