@@ -10,7 +10,7 @@ Bu tamamlayıcı doküman, **"From Black-Box to Explainability: Probabilistic Au
 
 ## 1. Temel Performans ve Stabilite
 
-Aşağıdaki tablo, modellerin üç farklı veri seti üzerindeki ortalama F1-skorlarını ve 5 farklı random seed (42, 123, 2026, 7, 999) ile elde edilen standart sapma değerlerini göstermektedir. 
+Aşağıdaki tablo, modellerin üç farklı veri seti üzerindeki ortalama F1-skorlarını ve 5 farklı random seed (42, 123, 2026, 7, 999) ile elde edilen standart sapma değerlerini göstermektedirr. 
 
 **Tablo 1: Model Performansı ve Stabilitesi (Ortalama F1-score ± Standart Sapma)**
 
