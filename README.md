@@ -36,6 +36,9 @@ Modellerin BATADAL veri setindeki gerçek ve tahmin edilen sınıf dağılımlar
   <img src="outputs/figures/LSTM_BATADAL_cm.png" width="30%" alt="LSTM Confusion Matrix">
   <img src="outputs/figures/GRU_BATADAL_cm.png" width="30%" alt="GRU Confusion Matrix">
   <img src="outputs/figures/1D-CNN_BATADAL_cm.png" width="30%" alt="1D-CNN Confusion Matrix">
+  <img src="outputs/figures/LSTM_SKAB_cm.png" width="30%" alt="LSTM Confusion Matrix">
+  <img src="outputs/figures/GRU_SKAB_cm.png" width="30%" alt="GRU Confusion Matrix">
+  <img src="outputs/figures/1D-CNN_SKAB_cm.png" width="30%" alt="1D-CNN Confusion Matrix">
 </div>
 <br>
 
@@ -46,6 +49,9 @@ Modellerin farklı eşik değerlerindeki (threshold) ayrım gücü (True Positiv
   <img src="outputs/figures/LSTM_BATADAL_roc.png" width="30%" alt="LSTM ROC Eğrisi">
   <img src="outputs/figures/GRU_BATADAL_roc.png" width="30%" alt="GRU ROC Eğrisi">
   <img src="outputs/figures/1D-CNN_BATADAL_roc.png" width="30%" alt="1D-CNN ROC Eğrisi">
+  <img src="outputs/figures/LSTM_SKAB_roc.png" width="30%" alt="LSTM ROC Eğrisi">
+  <img src="outputs/figures/GRU_SKAB_roc.png" width="30%" alt="GRU ROC Eğrisi">
+  <img src="outputs/figures/1D-CNN_SKAB_roc.png" width="30%" alt="1D-CNN ROC Eğrisi">
 </div>
 <br>
 
@@ -54,6 +60,7 @@ Oluşturulan Automata durumlarının (states) kendi aralarındaki olasılıksal 
 
 <div align="center">
   <img src="outputs/figures/Automata_BATADAL_transition_heatmap.png" width="60%" alt="Automata Transition Heatmap">
+  <img src="outputs/figures/Automata_SKAB_transition_heatmap.png" width="60%" alt="Automata Transition Heatmap">
 </div>
 <br>
 
