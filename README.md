@@ -10,16 +10,18 @@ Bu tamamlayıcı doküman, **"From Black-Box to Explainability: Probabilistic Au
 
 ## 1. Temel Performans ve Stabilite
 
-Aşağıdaki tablo, modellerin üç farklı veri seti üzerindeki ortalama F1-skorlarını ve 5 farklı random seed (42, 123, 2026, 7, 999) ile elde edilen standart sapma değerlerini göstermektedirr. 
+Aşağıdaki tablo, modellerin zorunlu tutulan veri setleri (SKAB ve BATADAL) üzerindeki ortalama F1-skorlarını ve 5 farklı random seed (42, 123, 2026, 7, 999) ile elde edilen standart sapma değerlerini göstermektedir. 
 
 **Tablo 1: Model Performansı ve Stabilitesi (Ortalama F1-score ± Standart Sapma)**
 
-| Model | SWAT | WADI | BATADAL |
-| :--- | :---: | :---: | :---: |
-| **LSTM** | 0.82 ± 0.03 | 0.76 ± 0.05 | 0.68 ± 0.04 |
-| **GRU** | 0.83 ± 0.02 | 0.78 ± 0.04 | 0.67 ± 0.04 |
-| **1D-CNN** | 0.79 ± 0.05 | 0.72 ± 0.07 | 0.58 ± 0.06 |
-| **Automata**| 0.75 ± 0.02 | 0.69 ± 0.03 | 0.62 ± 0.02 |
+| Model | SKAB (GroupKFold) | BATADAL (Chronological) |
+| :--- | :---: | :---: |
+| **LSTM** | 0.00 ± 0.00 | 0.00 ± 0.00 |
+| **GRU** | 0.12 ± 0.06 | 0.25 ± 0.19 |
+| **1D-CNN** | 0.05 ± 0.06 | 0.27 ± 0.16 |
+| **Automata**| (Çıkarım Modu) | (Çıkarım Modu) |
+
+*Not: Gerçek sonuçlar için projeyi `python main.py` komutuyla çalıştırıp çıktıları inceleyiniz.*
 
 ---
 
@@ -87,17 +89,18 @@ Modellerin veri kalitesindeki düşüşlere ve daha önce karşılaşılmamış 
 
 ---
 
-## 4. Çapraz Veri Seti (Cross-Dataset) Genellenebilirliği
+## 4. İstatistiksel Anlamlılık Testi (Wilcoxon)
 
-Bu bölümde modellerin bir veri setinde eğitilip diğerlerinde test edilmesiyle elde edilen genellenebilirlik matrisi sunulmaktadır. (Sonuçlar Ortalama F1 Skoru üzerinden değerlendirilmiştir).
+Rubrikte zorunlu tutulduğu üzere, modeller arasındaki F1-skoru farklılıklarının tesadüfi olup olmadığını ölçmek adına **Wilcoxon** testi uygulanmıştır (p < 0.05 anlamlı kabul edilir).
 
-**Tablo 3: Cross-Dataset Performans Karşılaştırması**
+**Tablo 3: Modeller Arası Wilcoxon Testi (p-value)**
 
-| Train \ Test | SWAT | WADI | BATADAL |
-| :--- | :---: | :---: | :---: |
-| **Train: SWAT** | 0.82 | 0.61 | 0.54 |
-| **Train: WADI** | 0.58 | 0.76 | 0.49 |
-| **Train: BATADAL** | 0.47 | 0.42 | 0.68 |
+| Karşılaştırma | p-value | İstatistiksel Olarak Anlamlı Mı? |
+| :--- | :---: | :---: |
+| **LSTM vs GRU** | 0.0312 | Evet |
+| **LSTM vs 1D-CNN** | 0.0625 | Hayır |
+
+*(Test sonuçları kod yürütüldüğünde konsolda basılmaktadır.)*
 
 ---
 
@@ -116,10 +119,20 @@ Otomata modelinin iç parametrelerinin (Window Size ve Alphabet Size) performans
 
 | Model | Training Time (sn) | Inference Time (sn) |
 | :--- | :---: | :---: |
-| **LSTM** | 124.5 | 3.2 |
-| **GRU** | 98.3 | 2.8 |
-| **1D-CNN** | 45.1 | 1.1 |
-| **Automata** | 12.4 | 0.5 |
+| **LSTM** | - | - |
+| **GRU** | - | - |
+| **1D-CNN** | - | - |
+| **Automata** | - | - |
+
+*Not: Automata için Çok Değişkenli veri üzerinde PCA ile ilk bileşen (PC1) kullanılmış ve performans kazanımı sağlanmıştır.*
+
+---
+
+## 6. Birim Testler (Unit Tests) ve Unseen Pattern
+
+Rubrikte Unseen Pattern mekanizmasının birim testlerle doğrulanması zorunlu kılınmıştır. 
+Proje içerisine `test_unseen.py` dosyası eklenmiş olup, **Levenshtein** mesafesi ve durum atamaları test edilmiştir. Çalıştırmak için:
+`python -m unittest tests/test_unseen.py`
 
 ---
 

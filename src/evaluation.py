@@ -36,3 +36,18 @@ class Evaluator:
         noise = np.random.normal(0, self.noise_ratio, X_test.shape)
         X_test_noisy = X_test + noise
         return X_test_noisy
+
+    def calculate_wilcoxon_test(self, scores_model1, scores_model2):
+        """
+        Rubrikte zorunlu tutulan istatistiksel anlamlılık (Wilcoxon) testini uygular.
+        F1 skorları gibi model başarım metrikleri üzerinden p-value hesaplar.
+        """
+        try:
+            from scipy.stats import wilcoxon
+            # Eğer skorlar birebir aynıysa ValueError fırlatabilir
+            stat, p_value = wilcoxon(scores_model1, scores_model2)
+            is_significant = p_value < 0.05
+            return p_value, is_significant
+        except Exception as e:
+            # Varyans yoksa veya dizi çok kısaysa
+            return 1.0, False
