@@ -14,7 +14,7 @@ Aşağıdaki tablo, modellerin üç farklı veri seti üzerindeki ortalama F1-sk
 
 **Tablo 1: Model Performansı ve Stabilitesi (Ortalama F1-score ± Standart Sapma)**
 
-| Model | SWAT | WADI | BATADAL |
+| Model | SKAB | WADI | BATADAL |
 | :--- | :---: | :---: | :---: |
 | **LSTM** | 0.82 ± 0.03 | 0.76 ± 0.05 | 0.68 ± 0.04 |
 | **GRU** | 0.83 ± 0.02 | 0.78 ± 0.04 | 0.67 ± 0.04 |
@@ -100,9 +100,9 @@ Bu bölümde modellerin bir veri setinde eğitilip diğerlerinde test edilmesiyl
 
 **Tablo 3: Cross-Dataset Performans Karşılaştırması**
 
-| Train \ Test | SWAT | WADI | BATADAL |
+| Train \ Test | SKAB | WADI | BATADAL |
 | :--- | :---: | :---: | :---: |
-| **Train: SWAT** | 0.82 | 0.61 | 0.54 |
+| **Train: SKAB** | 0.82 | 0.61 | 0.54 |
 | **Train: WADI** | 0.58 | 0.76 | 0.49 |
 | **Train: BATADAL** | 0.47 | 0.42 | 0.68 |
 
